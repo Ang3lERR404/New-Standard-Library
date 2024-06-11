@@ -21,4 +21,6 @@ pub fn alignedG(comptime T:type, addr:T, alignment:T) bool {
 /// \>:C
 pub fn alignedAny(i:usize, alignment:usize) bool {
   if (This.validAlignG(usize, alignment)) return This.alignedG(u64, i, alignment);
+  assert(alignment != 0);
+  return 0 == @mod(i, alignment);
 }
