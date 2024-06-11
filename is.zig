@@ -18,8 +18,7 @@ pub fn alignedG(comptime T:type, addr:T, alignment:T) bool {
   return mem.alignfb(T, addr, alignment, .backwards) == 0;
 }
 
+/// \>:C
 pub fn alignedAny(i:usize, alignment:usize) bool {
-  if (This.validAlignG(usize, alignment)) {
-
-  }
+  if (This.validAlignG(usize, alignment)) return This.alignedG(u64, i, alignment);
 }
