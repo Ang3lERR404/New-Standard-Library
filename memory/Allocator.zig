@@ -39,6 +39,6 @@ pub inline fn rawResize(this:This, buff:[]u8, log2Balign:u8, nLen:usize, retAdr:
   return this.table.resize(this.ptr, buff, log2Balign, nLen, retAdr);
 }
 
-pub inline fn free(this:This, buff:[]u8, log2Balign:u8, retAdr:usize) void {
+pub inline fn rawFree(this:This, buff:[]u8, log2Balign:u8, retAdr:usize) void {
   this.table.free(this.ptr, buff, log2Balign, retAdr);
 }
