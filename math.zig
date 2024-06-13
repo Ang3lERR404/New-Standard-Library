@@ -13,6 +13,9 @@ const std = @import("std");
 const nstd = @import("nstd.zig");
 
 const expectAll = nstd.testing.expectAll;
+pub const errors = error{
+  Overflow
+};
 
 pub const MinMax = enum {
   min,
@@ -54,3 +57,22 @@ test minmax {
     if (i % 2 == 1) std.debug.print("\n", .{});
   }
 }
+
+pub fn mul(comptime T:type, a:T, b:T) (errors.Overflow!T) {
+  if (T == comptime_int) return a * b;
+  const ov = @mulWithOverflow(a, b);
+  if (ov[1] != 0) return errors.Overflow;
+  return ov[0];
+}
+
+pub fn L2I(comptime T:type) type {
+  if (T == comptime_int) return comptime_int;
+  comptime var count = 0;
+  comptime var s = @typeInfo(T).Int.bits - 1;
+  inline while (s != 0) : (s >>= 1) {
+    count += 1;
+  }
+  return 
+}
+
+// pub fn log2Int(comptime T:type, )
