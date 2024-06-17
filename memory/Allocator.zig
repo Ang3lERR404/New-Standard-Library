@@ -1,11 +1,13 @@
 const nstd = @import("../nstd.zig");
 const This = @This();
-const aptr:type = *anyopaque;
+const aptr = nstd.meta.aptr;
 
 const assert = nstd.debug.assert;
 const math = nstd.math;
 const debug = nstd.debug;
 const mem = nstd.mem;
+
+const log2a = math.L2I(usize);
 
 pub const errors = error{
   OutOfMemory
@@ -49,7 +51,8 @@ pub inline fn rawFree(this:This, buff:[]u8, log2Balign:u8, retAdr:usize) void {
 }
 
 pub fn allocWSAA(this:This, comptime size:usize, comptime alignment:29, n:usize, retAdr:usize) errors![*]align(alignment) u8 {
-  const bCount = math.mul(usize, size, n) catch return errors;
+  const bCount = math.mul(usize, size, n) catch return errors.OutOfMemory;
+
   comptime debug.assert(alignment <= mem.pageSize);
 
   if (bCount == 0) {
@@ -57,5 +60,22 @@ pub fn allocWSAA(this:This, comptime size:usize, comptime alignment:29, n:usize,
     return @as([*]align(alignment) u8, @ptrFromInt(ptr));
   }
 
-  const Bptr = this.rawAlloc(bCount, log2a(alignment));
+  const Bptr = this.rawAlloc(bCount, log2a(alignment), retAdr) orelse return errors.OutOfMemory;
+  @memset(Bptr[0..bCount], undefined);
+  return @as([*]align(alignment) u8, @alignCast(Bptr));
+}
+
+pub fn resize(this:This, oldMem:anytype, nSize:usize) bool {
+  const Slice = @typeInfo(@TypeOf(oldMem)).Pointer;
+  const T = Slice.child;
+
+  switch (true) {
+    nSize == 0 => {
+      this.free(oldMem);
+      return true;
+    }, oldMem.len == 0 => return false,
+    else => {
+      const oBSlice = mem.sliceAsBytes(oldMem);
+    }
+  }
 }

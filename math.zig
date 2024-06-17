@@ -69,10 +69,9 @@ pub fn L2I(comptime T:type) type {
   if (T == comptime_int) return comptime_int;
   comptime var count = 0;
   comptime var s = @typeInfo(T).Int.bits - 1;
-  inline while (s != 0) : (s >>= 1) {
-    count += 1;
-  }
-  return 
+  inline while (s != 0) : (s >>= 1) count += 1;
+
+  return nstd.meta.Int(.unsigned, count);
 }
 
 // pub fn log2Int(comptime T:type, )
