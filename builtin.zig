@@ -348,12 +348,22 @@ pub fn defaultPanic(msg:[]const u8, errReturnTrace:?*StackTrace, retAddr:?usize)
   @setCold(true);
   
   // >:C
-  switch (builtin.zig_backend) {
-    .stage2_wasm, .stage2_arm,
-    .stage2_aarch64, .stage2_x86,
-    .stage2_x86_64, .stage2_sparc64,
-    .stage2_spirv64 => {
-      if (builtin.target.ofmt != .elf and builtin.target.ofmt != .macho) {return;}
-    }
+  if (builtin.zig_backend == .stage2_wasm or
+      builtin.zig_backend == .stage2_arm or
+      builtin.zig_backend == .stage2_aarch64 or
+      builtin.zig_backend == .stage2_x86 or
+      (builtin.zig_backend == .stage2_x86_64 and (builtin.target.ofmt != .elf and builtin.target.ofmt != .macho)) or
+      builtin.zig_backend == .stage2_sparc64 or
+      builtin.zig_backend == .stage2_spirv64) while (true) @breakpoint();
+
+  if (builtin.zig_backend == .stage2_riscv64) {
+    asm volatile ("ecall"
+    :
+    : [number] "{a7}" (64),
+      [arg1] "{a0}" (1),
+      [arg2] "{a1}" (@intFromPtr(msg.ptr)),
+      [arg3] "{a2}" (msg.len),
+    : "memory");
+    nstd.posix.exit(127);
   }
 }

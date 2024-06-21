@@ -2,6 +2,7 @@ const builtin = @import("builtin");
 const nstd = @import("nstd.zig");
 const Dir = nstd.iteration.direction;
 const is = nstd.is;
+const Types = nstd.builtin.Type;
 
 pub const Allocator = @import("memory/Allocator.zig");
 
@@ -15,8 +16,20 @@ pub const pageSize = switch(builtin.cpu.arch) {
   else => 4*1024
 };
 
-pub fn CopyPAttribs(comptime source:type, comptime size:nstd.builtin.Type.Pointer.Size, comptime child:type) type {
-  
+pub fn CopyPAttribs(comptime source:type, comptime size:Types.Pointer.Size, comptime child:type) type {
+  const info = @typeInfo(source).Pointer;
+  return @Type(.{
+    .Pointer = .{
+      .size = size,
+      .is_const = info.is_const,
+      .is_volatile = info.is_volatile,
+      .is_allowzero = info.is_allowzero,
+      .alignment = info.alignment,
+      .address_space = info.address_space,
+      .child = child,
+      .sentinel = null
+    }
+  });
 }
 
 /// \>:C\
