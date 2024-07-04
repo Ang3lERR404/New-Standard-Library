@@ -11,3 +11,5 @@ pub const c = @import("c.zig");
 pub const io = @import("io.zig");
 pub const fs = @import("fs.zig");
 pub const fmt = @import("fmt.zig");
+pub const base64 = @import("base64.zig");
+pub const crypto = @import("crypto.zig");
