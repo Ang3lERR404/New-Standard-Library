@@ -1,0 +1,54 @@
+const nstd = @import("nstd.zig");
+const builtinOD = @import("builtin");
+
+const math = nstd.math;
+const mem = nstd.mem;
+const debug = nstd.debug;
+
+const assert = debug.assert;
+const nativeEndian = builtinOD.target.cpu.arch.endian();
+
+pub const AT = enum(u6) {
+  nool = 0,
+  ignore = 1,
+  execfd = 2,
+  phdr = 3,
+  phent = 4,
+  phnum = 5,
+  pagesZ = 6,
+  base = 7,
+  flags = 8,
+  entry = 9,
+  notelf = 10,
+  uid = 11,
+  euid = 12,
+  gid = 13,
+  egid = 14,
+  platform = 15,
+  hwcap = 16,
+  clktck = 17,
+  fpucw = 18,
+  dCacheBSize = 19,
+  iCacheBSize = 20,
+  uCacheBSize = 21,
+  ignorePPC = 22,
+  secure = 23,
+  basePlatform = 24,
+  random = 25,
+  hwcap2 = 26,
+  execfn = 31,
+  sysinfo = 32,
+  sysinfoEHDR = 33,
+  l1ICacheShape = 34,
+  l1DCacheShape = 35,
+  l2CacheShape = 36,
+  l3CacheShape = 37,
+  l1ICacheSize = 40,
+  l1ICacheGeometry = 41,
+  l1DCacheSize = 42,
+  l1DCacheGeometry = 43,
+  l2CacheSize = 44,
+  l2CacheGeometry = 45,
+  l3CacheSize = 46,
+  l3CacheGeometry = 47
+};
