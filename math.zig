@@ -1,77 +1,46 @@
-//! General purpose math functions
-//! 
-//! Enums:
-//! ```zig
-//! const MinMax = enum{};
-//! ```
-//! 
-//! Methods:
-//! ```zig
-//! minmax:*const fn(comptime T:type, mm:MinMax) comptime_int;
-//! ```
-const std = @import("std");
-const nstd = @import("nstd.zig");
+const builtin = @import("builtin");
+const std = @import("std.zig");
+const float = @import("math/float.zig");
+const assert = std.debug.assert;
+const mem = std.mem;
+const testing = std.testing;
 
-const expectAll = nstd.testing.expectAll;
-pub const errors = error{
-  Overflow
-};
+/// Euler's number (e)
+pub const e = 2.71828182845904523536028747135266249775724709369995;
 
-pub const MinMax = enum {
-  min,
-  max
-};
+/// Archimedes' constant (π)
+pub const pi = 3.14159265358979323846264338327950288419716939937510;
 
-/// Gives the minimum or maximum integer of a given type.
-pub fn minmax(comptime T:type, mm:MinMax) comptime_int {
-  const info = @typeInfo(T);
-  const bitCount = info.Int.bits;
-  return switch (mm) {
-    .min => {
-      if (info.Int.signedness == .unsigned) return 0;
-      if (bitCount == 0) return 0;
-      return -(1 << (bitCount - 1));
-    },
-    .max => {
-      if (bitCount == 0) return 0;
-      return (1 << (bitCount - @intFromBool(info.Int.signedness == .signed)));
-    }
-  };
-}
+/// Phi or Golden ratio constant (Φ) = (1 + sqrt(5))/2
+pub const phi = 1.6180339887498948482045868343656381177203091798057628621;
 
-test minmax {
-  const arT = &[_]type{
-    u0, u1, u8, u16, u32, u64, u128,
-    i0, i1, i8, i16, i32, i64, i128,
-  };
-  inline for (0..arT.len) |i| {
-    const ar = arT[i];
-    const g = minmax(ar, .max);
-    std.debug.print("Testing minmax({any}, .max), {any}\n", .{ar, g});
-    if (i % 2 == 1) std.debug.print("\n", .{});
-  }
-  inline for (0..arT.len) |i| {
-    const ar = arT[i];
-    const g = minmax(ar, .min);
-    std.debug.print("Testing minmax({any}, .min), {any}\n", .{ar, g});
-    if (i % 2 == 1) std.debug.print("\n", .{});
-  }
-}
+/// Circle constant (τ)
+pub const tau = 2 * pi;
 
-pub fn mul(comptime T:type, a:T, b:T) (errors.Overflow!T) {
-  if (T == comptime_int) return a * b;
-  const ov = @mulWithOverflow(a, b);
-  if (ov[1] != 0) return errors.Overflow;
-  return ov[0];
-}
+/// log2(e)
+pub const log2e = 1.442695040888963407359924681001892137;
 
-pub fn L2I(comptime T:type) type {
-  if (T == comptime_int) return comptime_int;
-  comptime var count = 0;
-  comptime var s = @typeInfo(T).Int.bits - 1;
-  inline while (s != 0) : (s >>= 1) count += 1;
+/// log10(e)
+pub const log10e = 0.434294481903251827651128918916605082;
 
-  return nstd.meta.Int(.unsigned, count);
-}
+/// ln(2)
+pub const ln2 = 0.693147180559945309417232121458176568;
 
-// pub fn log2Int(comptime T:type, )
+/// ln(10)
+pub const ln10 = 2.302585092994045684017991454684364208;
+
+/// 2/sqrt(π)
+pub const twoSqrtPi = 1.128379167095512573896158903121545172;
+
+/// sqrt(2)
+pub const sqrt2 = 1.414213562373095048801688724209698079;
+
+/// 1/sqrt(2)
+pub const sqrt12 = 0.707106781186547524400844362104849039;
+
+/// pi/180.0
+pub const radPerDeg = 0.0174532925199432957692369076848861271344287188854172545609719144;
+
+/// 180.0/pi
+pub const degPerRad = 57.295779513082320876798154814105170332405472466564321549160243861;
+
