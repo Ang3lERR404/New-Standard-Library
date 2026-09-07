@@ -1,0 +1,24 @@
+const std = @import("std.zig");
+const io = std.Io;
+const Writer = io.Writer;
+const math = std.math;
+const mem = std.mem;
+const posix = std.posix;
+const fs = std.fs;
+const testing = std.testing;
+const Allocat = mem.Allocator;
+const File = io.File;
+const os = std.os;
+const windows = os.windows;
+const builtin = @import("builtin.zig");
+const nativeArch = builtin.cpu.arch;
+const nativeOs = builtin.os.tag;
+const root = @import("root");
+pub const Dwarf = @import("debug/dwarf.zig");
+pub const Pdb = @import("debug/pdb.zig");
+pub const Elf = @import("debug/elffile.zig");
+pub const MachO = @import("debug/machofile.zig");
+pub const Info = @import("debug/info.zig");
+pub const Coverage = @import("debug/coverage.zig");
+pub const cpuContext = @import("debug/cpuContext.zig");
+
